@@ -1,19 +1,9 @@
----
-title: "Blackfriday"
-author: "Abhishek Ajay (aa4266)"
-date: "November 23, 2018"
-output: github_document
----
+Blackfriday
+================
+Abhishek Ajay (aa4266)
+November 23, 2018
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-library(tidyverse)
-library(rvest)
-library(httr)
-```
-
-```{r}
+``` r
 urls = read_html("https://www.macys.com/shop/black-friday-sale/black-friday-doorbusters/Pageindex/1?id=62204")
 
 allbrands = 
@@ -38,7 +28,12 @@ allbrands_list =
   
 allbrands_list = allbrands_list[c(1:966),] %>% 
   separate(value, into = c("brand", "count"), sep = "[(]")
+```
 
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 1 rows
+    ## [966].
+
+``` r
 allbrands_list %>% 
   as.tibble() %>% 
   filter(count != "x", brand != "ist",!is.na(count)) %>% 
@@ -48,7 +43,18 @@ allbrands_list %>%
   arrange(desc(count)) %>% 
   head() %>% 
   knitr::kable()
+```
 
+| brand                      |  count|
+|:---------------------------|------:|
+| Macy's                     |   4294|
+| Surya                      |   3076|
+| INC International Concepts |   1927|
+| Trademark Global           |   1875|
+| Tommy Hilfiger             |   1815|
+| Calvin Klein               |   1639|
+
+``` r
 #row_count = seq(from = 2, to = 120, by = 2)
 
 #products_page_3 = products_page_3[row_count,]
@@ -56,5 +62,4 @@ allbrands_list %>%
 #x <- c(as = "asfef", qu = "qwerty", "yuiop[", "b", "stuff.blah.yech")
 # split x on the letter e
 #strsplit(x, "e")
-
 ```
