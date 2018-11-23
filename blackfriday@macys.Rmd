@@ -1,0 +1,59 @@
+---
+title: "Blackfriday"
+author: "Abhishek Ajay (aa4266)"
+date: "November 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(rvest)
+library(httr)
+```
+
+```{r}
+urls = read_html("https://www.macys.com/shop/black-friday-sale/black-friday-doorbusters/Pageindex/1?id=62204")
+
+allbrands = 
+  urls %>% 
+  html_nodes(".facet_name , .listbox") %>% 
+  html_text() %>% 
+  as.tibble()
+
+allbrands = allbrands[6,1]
+
+allbrands_list = 
+  allbrands %>% 
+  as.tibble() %>% 
+  as.character()
+  
+  
+allbrands_list = strsplit(allbrands_list, ")")
+
+allbrands_list = 
+  allbrands_list[[1]] %>% 
+  as.tibble()
+  
+allbrands_list = allbrands_list[c(1:966),] %>% 
+  separate(value, into = c("brand", "count"), sep = "[(]")
+
+allbrands_list %>% 
+  as.tibble() %>% 
+  filter(count != "x", brand != "ist",!is.na(count)) %>% 
+  rbind(c("2(X)ist", "3")) %>%
+  mutate(count = as.numeric(count)) %>% 
+  arrange(desc(count)) %>% 
+  head() %>% 
+  knitr::kable()
+
+#row_count = seq(from = 2, to = 120, by = 2)
+
+#products_page_3 = products_page_3[row_count,]
+
+#x <- c(as = "asfef", qu = "qwerty", "yuiop[", "b", "stuff.blah.yech")
+# split x on the letter e
+#strsplit(x, "e")
+
+```
